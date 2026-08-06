@@ -113,8 +113,8 @@ float sdCircle(vec2 p, vec2 c, float r) {
 
 const float ARC_START = 0.26;
 const float ARC_END = 5.74;
-const float HELIX_TURNS = 3.35;
-const float HELIX_HEIGHT = 1.14;
+const float HELIX_TURNS = 2.35;
+const float HELIX_HEIGHT = 0.96;
 const int COIL_SEGS = 256;
 
 vec3 rotateX3(vec3 v, float a) {
@@ -309,6 +309,7 @@ void main() {
   edgeDetail *= 1.0 - shadeBlend * 0.92;
 
   float wobble = (fbm(p * 1.6 + vec2(u_time * 0.07, -u_time * 0.045)) - 0.5) * 0.032;
+  wobble *= 1.0 - shadeBlend * 0.55;
 
   vec2 diag = vec2(0.78, 0.48);
   float c = cos(0.48);
@@ -324,18 +325,20 @@ void main() {
     + u_time * 0.058;
 
   float phase3d =
-    bestT * (HELIX_TURNS * 1.85)
-    - u_screw * 0.12 * shadeBlend
-    + dot(p, diag) * 0.16
-    + pr.y * 0.11
+    bestT * (HELIX_TURNS * 1.22)
+    - u_screw * 0.05 * shadeBlend
+    + dot(p, diag) * 0.10
+    + pr.y * 0.06
     + wobble
-    + u_time * 0.058;
+    + u_time * 0.034;
 
   float phase = mix(phase2d, phase3d, shadeBlend);
 
   vec3 iridescent = brandPalette(phase);
-  vec3 iridescentSoft = brandPalette(phase + 0.035);
-  iridescent = mix(iridescent, iridescentSoft, 0.22);
+  vec3 iridescentSoft = brandPalette(phase + 0.06);
+  iridescent = mix(iridescent, iridescentSoft, mix(0.22, 0.48, shadeBlend));
+  vec3 iridescentWide = brandPalette(phase + 0.11);
+  iridescent = mix(iridescent, mix(iridescent, iridescentWide, 0.45), shadeBlend * 0.38);
 
   // Top-left: soft ACEDFD / A9E2B2 (vs cyan-heavy bottom-right)
   float oppCool = 0.5 + 0.5 * cos(sweepAngle - 2.35619449);
@@ -354,20 +357,21 @@ void main() {
   iridescent = mix(iridescent, mix(iridescent, mix(C_CYAN, C_MINT, 0.35), 0.62), inCap * 0.28);
 
   float tube2d = 0.94 + 0.06 * sin(radialNorm2d * 3.14159265);
-  float tube3d = 0.99;
+  float tube3d = 1.0;
   float tube = mix(tube2d, tube3d, shadeBlend);
-  tube *= mix(1.0, 0.92 + 0.08 * smoothstep(-0.55, 0.55, bestZ), shadeBlend * 0.65);
+  tube *= mix(1.0, 0.94 + 0.06 * smoothstep(-0.55, 0.55, bestZ), shadeBlend * 0.28);
   iridescent *= tube;
 
   float rimShine = edgeDetail * pow(max(dot(normalize(p + 1e-5), normalize(vec2(-0.35, 0.55))), 0.0), 5.0);
-  rimShine *= mix(1.0, 0.45, shadeBlend);
-  iridescent = mix(iridescent, mix(C_CYAN, C_MAG, 0.55), rimShine * 0.1);
+  rimShine *= mix(1.0, 0.08, shadeBlend);
+  iridescent = mix(iridescent, mix(C_CYAN, C_MAG, 0.55), rimShine * mix(0.1, 0.025, shadeBlend));
 
   float spec = pow(max(dot(normalize(p + 1e-5), normalize(vec2(-0.35, 0.55))), 0.0), 3.0);
-  spec *= mix(1.0, 0.4, shadeBlend);
-  iridescent = mix(iridescent, mix(C_LIGHT, C_MAG, 0.55), spec * 0.07);
+  spec *= mix(1.0, 0.08, shadeBlend);
+  iridescent = mix(iridescent, mix(C_LIGHT, C_MAG, 0.55), spec * mix(0.07, 0.018, shadeBlend));
 
-  iridescent = boostSaturation(iridescent, 1.3);
+  iridescent = boostSaturation(iridescent, mix(1.3, 1.06, shadeBlend));
+  iridescent = mix(iridescent, mix(iridescent, C_LIGHT, 0.22), shadeBlend * 0.18);
 
   // Crisp ring mask (~1px AA, no fwidth — works on all WebGL1/2)
   float px = 2.0 / min(u_resolution.x, u_resolution.y);
