@@ -1,0 +1,86 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  pointer-events: auto;
+}
+
+.brand {
+  font-size: 0.875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.nav a {
+  font-size: 0.875rem;
+  opacity: 0.85;
+  transition: opacity 0.2s;
+}
+
+.nav a:hover {
+  opacity: 1;
+}
+
+.gallery {
+  min-height: 100vh;
+  padding: 5rem 1.5rem 3rem;
+  background: #000;
+}
+
+.gallery h1 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin: 0 0 0.5rem;
+}
+
+.gallery p {
+  margin: 0 0 2rem;
+  opacity: 0.6;
+  font-size: 0.9375rem;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+  max-width: 36rem;
+}
+
+.card {
+  display: block;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.card:hover {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.cardTitle {
+  font-size: 1rem;
+  margin: 0 0 0.35rem;
+}
+
+.cardDesc {
+  margin: 0;
+  font-size: 0.8125rem;
+  opacity: 0.55;
+}
+
+.back {
+  display: inline-block;
+  margin-bottom: 2rem;
+  font-size: 0.875rem;
+  opacity: 0.65;
+}
+
+.back:hover {
+  opacity: 1;
+}
